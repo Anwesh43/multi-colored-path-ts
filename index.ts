@@ -44,7 +44,7 @@ class Stage {
 class ScaleUtil {
 
     static cosify(scale : number) : number {
-        return Math.cos(scale * Math.PI)
+        return Math.abs(Math.cos(scale * Math.PI))
     }
 }
 
@@ -54,7 +54,7 @@ class DrawingUtil {
         context.beginPath()
         for (var i = 0; i <= scale; i+= scGap) {
             const x : number = w * i
-            const y : number = maxH * ScaleUtil.cosify(scale)
+            const y : number = h + (maxH - h) * ScaleUtil.cosify(i)
             if (i == 0) {
                 context.moveTo(x, y)
             } else {
@@ -66,7 +66,7 @@ class DrawingUtil {
 
     static drawMCCNode(context : CanvasRenderingContext2D, i : number, scale : number) {
         const gap : number = h / colors.length
-        const y : number = h - gap * i
+        const y : number = gap * i
         context.strokeStyle = colors[i]
         context.lineCap = 'round'
         context.lineWidth = Math.min(w, h) / strokeFactor
@@ -130,7 +130,8 @@ class MCCNode {
 
     addNeighbor() {
         if (this.i < colors.length - 1) {
-            this.addNeighbor()
+            this.next = new MCCNode(this.i + 1)
+            this.next.prev = this
         }
     }
 
