@@ -36,3 +36,10 @@ class Stage {
         stage.handleTap()
     }
 }
+
+class ScaleUtil {
+
+    static cosify(scale : number) : number {
+        return Math.cos(scale * Math.PI)
+    }
+}
