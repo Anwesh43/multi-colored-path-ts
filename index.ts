@@ -60,7 +60,7 @@ class DrawingUtil {
         context.stroke()
     }
 
-    static drawCCNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+    static drawMCCNode(context : CanvasRenderingContext2D, i : number, scale : number) {
         const gap : number = h / colors.length
         const y : number = h - gap * i
         context.strokeStyle = colors[i]
@@ -111,5 +111,49 @@ class Animator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+
+class MCCNode {
+
+    next : MCCNode
+    prev : MCCNode
+    state : State = new State()
+
+    constructor(private i : number) {
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        if (this.i < colors.length - 1) {
+            this.addNeighbor()
+        }
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        DrawingUtil.drawMCCNode(context, this.i, this.state.scale)
+        if (this.prev) {
+            this.prev.draw(context)
+        }
+    }
+
+    update(cb : Function) {
+        this.state.update(cb)
+    }
+
+    startUpdating(cb : Function) {
+        this.state.startUpdating(cb)
+    }
+
+    getNext(dir : number, cb : Function) : MCCNode {
+        var curr : MCCNode = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
     }
 }
