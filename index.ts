@@ -180,3 +180,25 @@ class MultiColoredCurve {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    mcc : MultiColoredCurve = new MultiColoredCurve()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.mcc.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.mcc.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.mcc.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
